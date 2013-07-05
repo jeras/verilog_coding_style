@@ -36,16 +36,18 @@ The main purpose of group names is to be able to search for related signals in a
 
 In the next example wishbone signals are prepended with the group denominator `wbn_`.
 
-    wire          wbn_cyc  ,  // cyc_i -- cycle
-    wire          wbn_we   ,  // we_i  -- write enable
-    wire          wbn_stb  ,  // stb_i -- strobe
-    wire [AW-1:0] wbn_adr  ,  // adr_i -- address
-    wire [SW-1:0] wbn_sel  ,  // sel_i -- byte select
-    wire [DW-1:0] wbn_dat_w,  // dat_i -- data write
-    wire [DW-1:0] wbn_dat_r,  // dat_o -- data read
-    wire          wbn_ack  ,  // ack_o -- acknowledge
-    wire          wbn_err  ,  // err_o -- error
-    wire          wbn_rty  ,  // rty_o -- retry
+```verilog
+wire          wbn_cyc  ,  // cyc_i -- cycle
+wire          wbn_we   ,  // we_i  -- write enable
+wire          wbn_stb  ,  // stb_i -- strobe
+wire [AW-1:0] wbn_adr  ,  // adr_i -- address
+wire [SW-1:0] wbn_sel  ,  // sel_i -- byte select
+wire [DW-1:0] wbn_dat_w,  // dat_i -- data write
+wire [DW-1:0] wbn_dat_r,  // dat_o -- data read
+wire          wbn_ack  ,  // ack_o -- acknowledge
+wire          wbn_err  ,  // err_o -- error
+wire          wbn_rty  ,  // rty_o -- retry
+```
 
 Note there are no appended strings describing if a signal is in input (`_i`) or an output (`_o`), they cause issues when copying vertical blocks of code to a different context (from a master port to a slave port).
 This appendices are part of the Wishbone standard, but they do not make sense if the signals are not module ports, but instead are used to connect two modules on the same hierarchical level. The biggest issue with the Wishbone standard naming are the data signals. The input output naming does not make much sense on the interconnect level, while describibg the data signals are write (`dat_w`) or read (`dat_r`) makes sense on any level. 
@@ -60,37 +62,38 @@ Vertical Code Alignment
 
 Code for a group of related signals should be vertically alligned. The main reason here is the verbosity of Verilog code, where there is no way to manipulate (use as ports, or in assignments) groups of signals, instead each element of the group must be written separately. SystemVerilog offers structures and interfaces which reduce this kind of verbosity. Another source of verbosity are port connections. While it is possible like in C to just list the ports in correct order, this is rarely used, instead ports are usually connected by name.
 
-    wbn2apb #(
-      .AW (AW),
-      .DW (DW),
-      .SW (SW)
-    ) dut (
-      // system signals
-      .clk          (clk),
-      .rst          (rst),
-      // Wishbone 3 slave port (to be driven by an external master)
-      .wbn_cyc      (wbn_cyc  ),
-      .wbn_we       (wbn_we   ),
-      .wbn_stb      (wbn_stb  ),
-      .wbn_adr      (wbn_adr  ),
-      .wbn_sel      (wbn_sel  ),
-      .wbn_dat_w    (wbn_dat_w),
-      .wbn_dat_r    (wbn_dat_r),
-      .wbn_ack      (wbn_ack  ),
-      .wbn_err      (wbn_err  ),
-      .wbn_rty      (wbn_rty  ),
-      // AMBA 3 APB 2 master port (to drive an external slave)
-      .apb_penable  (apb_penable),
-      .apb_pwrite   (apb_pwrite ),
-      .apb_pstrb    (apb_pstrb  ),
-      .apb_paddr    (apb_paddr  ),
-      .apb_psel     (apb_psel   ),
-      .apb_pwdata   (apb_pwdata ),
-      .apb_prdata   (apb_prdata ),
-      .apb_pready   (apb_pready ),
-      .apb_pslverr  (apb_pslverr)
-    );
-
+```verilog
+wbn2apb #(
+  .AW (AW),
+  .DW (DW),
+  .SW (SW)
+) dut (
+  // system signals
+  .clk          (clk),
+  .rst          (rst),
+  // Wishbone 3 slave port (to be driven by an external master)
+  .wbn_cyc      (wbn_cyc  ),
+  .wbn_we       (wbn_we   ),
+  .wbn_stb      (wbn_stb  ),
+  .wbn_adr      (wbn_adr  ),
+  .wbn_sel      (wbn_sel  ),
+  .wbn_dat_w    (wbn_dat_w),
+  .wbn_dat_r    (wbn_dat_r),
+  .wbn_ack      (wbn_ack  ),
+  .wbn_err      (wbn_err  ),
+  .wbn_rty      (wbn_rty  ),
+  // AMBA 3 APB 2 master port (to drive an external slave)
+  .apb_penable  (apb_penable),
+  .apb_pwrite   (apb_pwrite ),
+  .apb_pstrb    (apb_pstrb  ),
+  .apb_paddr    (apb_paddr  ),
+  .apb_psel     (apb_psel   ),
+  .apb_pwdata   (apb_pwdata ),
+  .apb_prdata   (apb_prdata ),
+  .apb_pready   (apb_pready ),
+  .apb_pslverr  (apb_pslverr)
+);
+```
 
 Code Block Size
 ---------------
