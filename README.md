@@ -101,6 +101,10 @@ http://vimdoc.sourceforge.net/htmldoc/visual.html#visual-mode
 
 You can see from the example example, alignment is done to the left side, the right side should be filled with whitespace, separators `.`, `,`, `(`, `)`, `{`, `}`, `[`, `]`, ... and operators `+`, `-`, `*`, `=`, `<`, `>`, ... should also be aligned vertically.
 
+Besides my code there are examples of verticel alignment in the UVM code.
+http://uvm.git.sourceforge.net/git/gitweb.cgi?p=uvm/uvm;a=blob;f=distrib/examples/simple/registers/primer/reg_model.sv;h=6cf50e0cfbee10619229efc659c117e0c8a8df98;hb=refs/heads/UVM_1_2
+http://uvm.git.sourceforge.net/git/gitweb.cgi?p=uvm/uvm;a=blob;f=distrib/examples/simple/registers/common/wishbone/driver.sv;h=8ad98ca927fe35958675844ba606da204dffa231;hb=refs/heads/UVM_1_2
+
 Code Block Size
 ---------------
 
