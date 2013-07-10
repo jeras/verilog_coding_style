@@ -13,7 +13,7 @@ module wbn2apb #(
   input  wire [AW-1:0] wbn_adr  ,  // address
   input  wire [SW-1:0] wbn_sel  ,  // byte select
   input  wire [DW-1:0] wbn_dat_w,  // data write
-  input  wire [DW-1:0] wbn_dat_r,  // data read
+  output wire [DW-1:0] wbn_dat_r,  // data read
   output wire          wbn_ack  ,  // acknowledge
   output wire          wbn_err  ,  // error
   output wire          wbn_rty  ,  // retry
@@ -28,5 +28,19 @@ module wbn2apb #(
   input  wire          apb_pready ,  // transfer ready
   input  wire          apb_pslverr   // slave error
 );
+
+// forwared signals
+assign apb_penable = wbn_cyc  ;
+assign apb_pwrite  = wbn_we   ;
+assign apb_pstrb   = wbn_stb  ;
+assign apb_paddr   = wbn_adr  ;
+assign apb_psel    = wbn_sel  ;
+assign apb_pwdata  = wbn_dat_w;
+
+// return siignals
+assign wbn_dat_r = apb_prdata ;
+assign wbn_ack   = apb_pready ;
+assign wbn_err   = apb_pslverr;
+assign wbn_rty   = 1'b0;
 
 endmodule

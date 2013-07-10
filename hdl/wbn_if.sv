@@ -1,7 +1,10 @@
-interface wbn_if (
-  parameter integer AW = 32,  // address width
-  parameter integer DW = 32,  // data width
-  parameter integer SW = DW/8 // byte select width
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+interface wbn_if #(
+  parameter int AW = 32,  // address width
+  parameter int DW = 32,  // data width
+  parameter int SW = DW/8 // byte select width
 )(
   // system signals
   input logic clk,  // clock
@@ -20,4 +23,30 @@ logic          ack  ;  // acknowledge
 logic          err  ;  // error
 logic          rty  ;  // retry
 
-endinterface
+modport master (
+  output cyc  ,
+  output we   ,
+  output stb  ,
+  output adr  ,
+  output sel  ,
+  output dat_w,
+  input  dat_r,
+  input  ack  ,
+  input  err  ,
+  input  rty
+);
+
+modport slave (
+  input  cyc  ,
+  input  we   ,
+  input  stb  ,
+  input  adr  ,
+  input  sel  ,
+  input  dat_w,
+  output dat_r,
+  output ack  ,
+  output err  ,
+  output rty
+);
+
+endinterface: wbn_if

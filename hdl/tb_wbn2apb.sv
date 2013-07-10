@@ -1,33 +1,57 @@
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
 module tb_wbn2apb #(
-  parameter integer AW = 32,  // address width
-  parameter integer DW = 32,  // data width
-  parameter integer SW = DW/8 // byte select width
+  parameter int AW = 32,  // address width
+  parameter int DW = 32,  // data width
+  parameter int SW = DW/8 // byte select width
 );
 
+//////////////////////////////////////////////////////////////////////////////
+// local signals
+//////////////////////////////////////////////////////////////////////////////
+
 // system signals
-wire          clk,  // clock
-wire          rst,  // reset
+logic          clk = 1;  // clock
+logic          rst = 1;  // reset
 // Wishbone 3 slave port (to be driven by an external master)
-wire          wbn_cyc  ,  // cycle
-wire          wbn_we   ,  // write enable
-wire          wbn_stb  ,  // transfer strobe
-wire [AW-1:0] wbn_adr  ,  // address
-wire [SW-1:0] wbn_sel  ,  // byte select
-wire [DW-1:0] wbn_dat_w,  // data write
-wire [DW-1:0] wbn_dat_r,  // data read
-wire          wbn_ack  ,  // acknowledge
-wire          wbn_err  ,  // error
-wire          wbn_rty  ,  // retry
+logic          wbn_cyc  ;  // cycle
+logic          wbn_we   ;  // write enable
+logic          wbn_stb  ;  // transfer strobe
+logic [AW-1:0] wbn_adr  ;  // address
+logic [SW-1:0] wbn_sel  ;  // byte select
+logic [DW-1:0] wbn_dat_w;  // data write
+logic [DW-1:0] wbn_dat_r;  // data read
+logic          wbn_ack  ;  // acknowledge
+logic          wbn_err  ;  // error
+logic          wbn_rty  ;  // retry
 // AMBA 3 APB 2 master port (to drive an external slave)
-wire          apb_penable,  // transfer enable
-wire          apb_pwrite ,  // write enable
-wire          apb_pstrb  ,  // transfer strobe
-wire [AW-1:0] apb_paddr  ,  // address
-wire [SW-1:0] apb_psel   ,  // byte select
-wire [DW-1:0] apb_pwdata ,  // data write
-wire [DW-1:0] apb_prdata ,  // data read
-wire          apb_pready ,  // transfer ready
-wire          apb_pslverr   // slave error
+logic          apb_penable;  // transfer enable
+logic          apb_pwrite ;  // write enable
+logic          apb_pstrb  ;  // transfer strobe
+logic [AW-1:0] apb_paddr  ;  // address
+logic [SW-1:0] apb_psel   ;  // byte select
+logic [DW-1:0] apb_pwdata ;  // data write
+logic [DW-1:0] apb_prdata ;  // data read
+logic          apb_pready ;  // transfer ready
+logic          apb_pslverr;  // slave error
+
+//////////////////////////////////////////////////////////////////////////////
+// clock, reset and stimuli
+//////////////////////////////////////////////////////////////////////////////
+
+always #5ns clk = ~clk;
+
+initial begin
+  repeat (4) @ (posedge clk);
+  rst = 1'b0;
+  repeat (4) @ (posedge clk);
+  $finish();
+end
+
+//////////////////////////////////////////////////////////////////////////////
+// DUT instance
+//////////////////////////////////////////////////////////////////////////////
 
 wbn2apb #(
   .AW (AW),
