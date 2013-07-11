@@ -2,9 +2,10 @@
 //////////////////////////////////////////////////////////////////////////////
 
 interface wbn_if #(
-  parameter int AW = 32,  // address width
-  parameter int DW = 32,  // data width
-  parameter int SW = DW/8 // byte select width
+  parameter string MODE = "NONE", // modes "MASTER", "SLAVE"
+  parameter int    AW   = 32,     // address width
+  parameter int    DW   = 32,     // data width
+  parameter int    SW   = DW/8    // byte select width
 )(
   // system signals
   input logic clk,  // clock
@@ -23,30 +24,41 @@ logic          ack  ;  // acknowledge
 logic          err  ;  // error
 logic          rty  ;  // retry
 
-modport master (
-  output cyc  ,
-  output we   ,
-  output stb  ,
-  output adr  ,
-  output sel  ,
-  output dat_w,
-  input  dat_r,
-  input  ack  ,
-  input  err  ,
-  input  rty
-);
+generate
 
-modport slave (
-  input  cyc  ,
-  input  we   ,
-  input  stb  ,
-  input  adr  ,
-  input  sel  ,
-  input  dat_w,
-  output dat_r,
-  output ack  ,
-  output err  ,
-  output rty
-);
+if (MODE == "MASTER") begin: m
+
+  initial begin
+    cyc = 1'b0;
+  end
+
+  task trn (
+    input  logic          trn_wen,
+    input  logic [AW-1:0] trn_adr,
+    input  logic [SW-1:0] trn_sel,
+    input  logic [DW-1:0] trn_dtw,
+    output logic [DW-1:0] trn_dtr,
+    output logic          trn_err
+  );
+    // start cycle
+    cyc   = 1'b1;
+    stb   = 1'b1;
+    we    = trn_wen;
+    adr   = trn_adr;
+    sel   = trn_sel;
+    dat_w = trn_dtw;
+    // wait for acknowledge/error/retry response
+    do @ (posedge clk);
+    while (~(ack | err | rty));
+    // read data and status
+    trn_dtr = dat_r;
+    trn_err = err | rty;
+    cyc   = 1'b0;
+    stb   = 1'b0;
+  endtask: trn
+
+end: m
+
+endgenerate
 
 endinterface: wbn_if
